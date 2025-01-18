@@ -9,9 +9,6 @@ export class ExpensesService {
 
   create(userId: string, createExpenseDto: CreateExpenseDto) {
     return this.prisma.expense.create({
-      where: {
-        userId,
-      },
       data: createExpenseDto,
     });
   }

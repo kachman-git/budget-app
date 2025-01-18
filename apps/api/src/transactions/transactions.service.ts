@@ -9,9 +9,6 @@ export class TransactionsService {
 
   create(userId: string, createTransactionDto: CreateTransactionDto) {
     return this.prisma.transaction.create({
-      where: {
-        userId,
-      },
       data: createTransactionDto,
     });
   }
