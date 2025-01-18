@@ -8,12 +8,16 @@ import {
   Delete,
   Query,
   ParseUUIDPipe,
+  UseGuards,
+  ForbiddenException,
 } from '@nestjs/common';
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/auth/guard';
 
+@UseGuards(JwtGuard)
 @Controller('transactions')
 export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
@@ -27,8 +31,18 @@ export class TransactionsController {
   }
 
   @Get()
-  findAll(@GetUser('id') userId: string, @Query('budgetId') budgetId: string) {
-    return this.transactionsService.findAll(userId, budgetId);
+  findAll(
+    @GetUser('id') userId: string,
+    @Query('userId') userQueryId: string,
+    @Query('budgetId') budgetId: string,
+  ) {
+    if (userId === userQueryId) {
+      return this.transactionsService.findAll(userId, budgetId);
+    } else {
+      throw new ForbiddenException(
+        'You are not authorized to access this resource.',
+      );
+    }
   }
 
   @Get(':id')
