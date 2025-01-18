@@ -7,9 +7,12 @@ import { UpdateBudgetDto } from './dto/update-budget.dto';
 export class BudgetsService {
   constructor(private prisma: PrismaService) {}
 
-  async create(createBudgetDto: CreateBudgetDto) {
+  async create(userId: string, createBudgetDto: CreateBudgetDto) {
     return this.prisma.budget.create({
-      data: createBudgetDto,
+      data: {
+        userId,
+        ...createBudgetDto,
+      },
     });
   }
 

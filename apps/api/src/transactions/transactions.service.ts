@@ -9,7 +9,10 @@ export class TransactionsService {
 
   create(userId: string, createTransactionDto: CreateTransactionDto) {
     return this.prisma.transaction.create({
-      data: createTransactionDto,
+      data: {
+        userId,
+        ...createTransactionDto,
+      },
     });
   }
 

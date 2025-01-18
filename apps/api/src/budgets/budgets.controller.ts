@@ -25,7 +25,7 @@ export class BudgetsController {
     @GetUser('id') userId: string,
     @Body() createBudgetDto: CreateBudgetDto,
   ) {
-    return this.budgetsService.create(createBudgetDto);
+    return this.budgetsService.create(userId, createBudgetDto);
   }
 
   @Get()
