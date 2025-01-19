@@ -31,18 +31,8 @@ export class TransactionsController {
   }
 
   @Get()
-  findAll(
-    @GetUser('id') userId: string,
-    @Query('userId') userQueryId: string,
-    @Query('budgetId') budgetId: string,
-  ) {
-    if (userId === userQueryId) {
-      return this.transactionsService.findAll(userId, budgetId);
-    } else {
-      throw new ForbiddenException(
-        'You are not authorized to access this resource.',
-      );
-    }
+  findAll(@GetUser('id') userId: string, @Query('budgetId') budgetId: string) {
+    return this.transactionsService.findAll(userId, budgetId);
   }
 
   @Get(':id')
