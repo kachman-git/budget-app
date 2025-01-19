@@ -59,3 +59,9 @@ model Transaction {
   budget      Budget?  @relation(fields: [budgetId], references: [id])
 }
 
+model Session {
+  id        String @id @default(uuid())
+  expiresAt DateTime
+  sessionToken String
+  accessToken  String
+}
