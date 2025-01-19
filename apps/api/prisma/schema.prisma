@@ -59,3 +59,7 @@ model Transaction {
   budget      Budget?  @relation(fields: [budgetId], references: [id])
 }
 
+model Works {
+  id        String   @id @default(uuid())
+  name      String
+}
