@@ -1,61 +1,73 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Select } from '@/components/ui/select'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { format, subMonths, eachDayOfInterval } from 'date-fns'
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Select } from "@/components/ui/select";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import { format, subMonths, eachDayOfInterval } from "date-fns";
 
 interface Transaction {
-  id: string
-  amount: number
-  date: string
-  type: 'INCOME' | 'EXPENSE'
+  id: string;
+  amount: number;
+  date: string;
+  type: "INCOME" | "EXPENSE";
 }
 
 export default function AnalysisPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([])
-  const [timeRange, setTimeRange] = useState('1M')
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [timeRange, setTimeRange] = useState("1M");
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const response = await fetch('http://localhost:3001/transactions')
-      const data = await response.json()
-      setTransactions(data)
-    }
-    fetchTransactions()
-  }, [])
+      const response = await fetch("http://localhost:3001/transactions");
+      const data = await response.json();
+      setTransactions(data);
+    };
+    fetchTransactions();
+  }, []);
 
   const getChartData = () => {
-    const endDate = new Date()
-    const startDate = subMonths(endDate, timeRange === '1M' ? 1 : timeRange === '3M' ? 3 : 6)
-    
-    const dateRange = eachDayOfInterval({ start: startDate, end: endDate })
-    
-    const chartData = dateRange.map(date => {
-      const formattedDate = format(date, 'MM/dd')
-      const dayTransactions = transactions.filter(t => 
-        new Date(t.date).toDateString() === date.toDateString()
-      )
-      
-      const income = dayTransactions
-        .filter(t => t.type === 'INCOME')
-        .reduce((sum, t) => sum + t.amount, 0)
-      
-      const expense = dayTransactions
-        .filter(t => t.type === 'EXPENSE')
-        .reduce((sum, t) => sum + t.amount, 0)
-      
-      return { date: formattedDate, income, expense }
-    })
+    const endDate = new Date();
+    const startDate = subMonths(
+      endDate,
+      timeRange === "1M" ? 1 : timeRange === "3M" ? 3 : 6
+    );
 
-    return chartData
-  }
+    const dateRange = eachDayOfInterval({ start: startDate, end: endDate });
+
+    const chartData = dateRange.map((date) => {
+      const formattedDate = format(date, "MM/dd");
+      const dayTransactions = transactions.filter(
+        (t) => new Date(t.date).toDateString() === date.toDateString()
+      );
+
+      const income = dayTransactions
+        .filter((t) => t.type === "INCOME")
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      const expense = dayTransactions
+        .filter((t) => t.type === "EXPENSE")
+        .reduce((sum, t) => sum + t.amount, 0);
+
+      return { date: formattedDate, income, expense };
+    });
+
+    return chartData;
+  };
 
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Financial Analysis</h1>
-      
+
       <Card>
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Income vs Expenses Over Time</CardTitle>
@@ -83,6 +95,5 @@ export default function AnalysisPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-

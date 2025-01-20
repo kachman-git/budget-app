@@ -39,7 +39,7 @@ export interface Transaction {
   amount: number;
   date: string;
   description: string;
-  type: 'INCOME' | 'EXPENSE';
+  type: "INCOME" | "EXPENSE";
   userId: string;
   budgetId?: string;
 }
@@ -64,7 +64,7 @@ export interface CreateTransactionDto {
   amount: number;
   date: string;
   description: string;
-  type: 'INCOME' | 'EXPENSE';
+  type: "INCOME" | "EXPENSE";
   userId: string;
   budgetId?: string;
 }
@@ -72,4 +72,3 @@ export interface CreateTransactionDto {
 export interface UpdateBudgetDto extends Partial<CreateBudgetDto> {}
 export interface UpdateExpenseDto extends Partial<CreateExpenseDto> {}
 export interface UpdateTransactionDto extends Partial<CreateTransactionDto> {}
-

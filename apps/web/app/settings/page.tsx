@@ -1,52 +1,65 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { updateUser } from '@/lib/api'
-import { useAuth } from '@/contexts/AuthContext'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useToast } from '@/components/ui/use-toast'
-import { Eye, EyeOff } from 'lucide-react'
-import { updateUserSchema, type UpdateUserInput } from '@/lib/schemas'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { updateUser } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useToast } from "@/components/ui/use-toast";
+import { Eye, EyeOff } from "lucide-react";
+import { updateUserSchema, type UpdateUserInput } from "@/lib/schemas";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
 
 export default function SettingsPage() {
-  const [showPassword, setShowPassword] = useState(false)
-  const router = useRouter()
-  const { user, setUser } = useAuth()
-  const { toast } = useToast()
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+  const { user, setUser } = useAuth();
+  const { toast } = useToast();
 
-  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<UpdateUserInput>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<UpdateUserInput>({
     resolver: zodResolver(updateUserSchema),
     defaultValues: {
-      name: user?.name || '',
-      email: user?.email || '',
-    }
-  })
+      name: user?.name || "",
+      email: user?.email || "",
+    },
+  });
 
   const onSubmit = async (data: UpdateUserInput) => {
     try {
-      const updatedUser = await updateUser(data)
-      setUser(updatedUser)
+      const updatedUser = await updateUser(data);
+      setUser(updatedUser);
       toast({
-        title: 'Success',
-        description: 'Your profile has been updated successfully.',
-      })
+        title: "Success",
+        description: "Your profile has been updated successfully.",
+      });
     } catch (error) {
       toast({
-        title: 'Error',
-        description: error instanceof Error ? error.message : 'Failed to update profile. Please try again.',
-        variant: 'destructive',
-      })
+        title: "Error",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to update profile. Please try again.",
+        variant: "destructive",
+      });
     }
-  }
+  };
 
   if (!user) {
-    return null // or a loading state
+    return null; // or a loading state
   }
 
   return (
@@ -63,9 +76,11 @@ export default function SettingsPage() {
               <Input
                 id="name"
                 placeholder="Enter your name"
-                {...register('name')}
+                {...register("name")}
               />
-              {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
+              {errors.name && (
+                <p className="text-sm text-red-500">{errors.name.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -73,9 +88,11 @@ export default function SettingsPage() {
                 id="email"
                 type="email"
                 placeholder="Enter your email"
-                {...register('email')}
+                {...register("email")}
               />
-              {errors.email && <p className="text-sm text-red-500">{errors.email.message}</p>}
+              {errors.email && (
+                <p className="text-sm text-red-500">{errors.email.message}</p>
+              )}
             </div>
             <div className="space-y-2">
               <Label htmlFor="password">New Password (optional)</Label>
@@ -84,7 +101,7 @@ export default function SettingsPage() {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Enter new password"
-                  {...register('password')}
+                  {...register("password")}
                 />
                 <Button
                   type="button"
@@ -100,15 +117,18 @@ export default function SettingsPage() {
                   )}
                 </Button>
               </div>
-              {errors.password && <p className="text-sm text-red-500">{errors.password.message}</p>}
+              {errors.password && (
+                <p className="text-sm text-red-500">
+                  {errors.password.message}
+                </p>
+              )}
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? 'Updating...' : 'Update Profile'}
+              {isSubmitting ? "Updating..." : "Update Profile"}
             </Button>
           </form>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
-

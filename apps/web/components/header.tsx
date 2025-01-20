@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import Link from 'next/link'
-import { useAuth } from '@/contexts/AuthContext'
-import { useTheme } from '@/contexts/ThemeContext'
-import { Button } from '@/components/ui/button'
-import { Moon, Sun } from 'lucide-react'
+import Link from "next/link";
+import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Button } from "@/components/ui/button";
+import { Moon, Sun } from "lucide-react";
 
 export function Header() {
-  const { user, logout } = useAuth()
-  const { theme, toggleTheme } = useTheme()
+  const { user, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   return (
     <header className="bg-primary text-primary-foreground shadow-md">
@@ -28,7 +28,9 @@ export function Header() {
               <Link href="/settings">
                 <Button variant="ghost">Settings</Button>
               </Link>
-              <Button variant="ghost" onClick={logout}>Logout</Button>
+              <Button variant="ghost" onClick={logout}>
+                Logout
+              </Button>
             </>
           ) : (
             <>
@@ -41,11 +43,14 @@ export function Header() {
             </>
           )}
           <Button variant="ghost" size="icon" onClick={toggleTheme}>
-            {theme === 'light' ? <Moon className="h-5 w-5" /> : <Sun className="h-5 w-5" />}
+            {theme === "light" ? (
+              <Moon className="h-5 w-5" />
+            ) : (
+              <Sun className="h-5 w-5" />
+            )}
           </Button>
         </nav>
       </div>
     </header>
-  )
+  );
 }
-

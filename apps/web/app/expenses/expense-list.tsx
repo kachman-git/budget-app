@@ -1,23 +1,30 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
+import { useState, useEffect } from "react";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 interface Expense {
-  id: string
-  description: string
-  amount: number
-  date: string
+  id: string;
+  description: string;
+  amount: number;
+  date: string;
 }
 
 export function ExpenseList() {
-  const [expenses, setExpenses] = useState<Expense[]>([])
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
-    fetch('http://localhost:3001/expenses')
-      .then(response => response.json())
-      .then(data => setExpenses(data))
-  }, [])
+    fetch("http://localhost:3001/expenses")
+      .then((response) => response.json())
+      .then((data) => setExpenses(data));
+  }, []);
 
   return (
     <Table>
@@ -29,7 +36,7 @@ export function ExpenseList() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {expenses.map(expense => (
+        {expenses.map((expense) => (
           <TableRow key={expense.id}>
             <TableCell>{expense.description}</TableCell>
             <TableCell>${expense.amount}</TableCell>
@@ -38,6 +45,5 @@ export function ExpenseList() {
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }
-

@@ -1,40 +1,40 @@
-'use client'
+"use client";
 
-import { useState, useEffect } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Progress } from '@/components/ui/progress'
-import Link from 'next/link'
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'
-import { Skeleton } from '@/components/ui/skeleton'
-import { BudgetSummary } from '@/lib/types'
-import { getBudgets, getBudgetSummary } from '@/lib/api'
-import { Button } from '@/components/ui/button'
+import { useState, useEffect } from "react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import Link from "next/link";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
+import { Skeleton } from "@/components/ui/skeleton";
+import { BudgetSummary } from "@/lib/types";
+import { getBudgets, getBudgetSummary } from "@/lib/api";
+import { Button } from "@/components/ui/button";
 
 export function BudgetList() {
-  const [budgets, setBudgets] = useState<BudgetSummary[]>([])
-  const [loading, setLoading] = useState(true)
+  const [budgets, setBudgets] = useState<BudgetSummary[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
-        const budgetsData = await getBudgets()
+        const budgetsData = await getBudgets();
         const budgetsWithSummary = await Promise.all(
           budgetsData.map(async (budget: BudgetSummary) => {
-            const summary = await getBudgetSummary(budget.id)
-            return { ...budget, ...summary }
+            const summary = await getBudgetSummary(budget.id);
+            return { ...budget, ...summary };
           })
-        )
-        setBudgets(budgetsWithSummary)
+        );
+        setBudgets(budgetsWithSummary);
       } catch (error) {
-        console.error('Failed to fetch budgets:', error)
+        console.error("Failed to fetch budgets:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    fetchBudgets()
-  }, [])
+    };
+    fetchBudgets();
+  }, []);
 
-  const COLORS = ['#0088FE', '#00C49F', '#FFBB28']
+  const COLORS = ["#0088FE", "#00C49F", "#FFBB28"];
 
   if (loading) {
     return (
@@ -53,7 +53,7 @@ export function BudgetList() {
           </Card>
         ))}
       </div>
-    )
+    );
   }
 
   return (
@@ -65,7 +65,7 @@ export function BudgetList() {
         </Link>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {budgets.map(budget => (
+        {budgets.map((budget) => (
           <Link href={`/budgets/${budget.id}`} key={budget.id}>
             <Card className="hover:shadow-lg transition-shadow duration-200">
               <CardHeader>
@@ -74,25 +74,31 @@ export function BudgetList() {
               <CardContent>
                 <div className="flex justify-between items-center mb-4">
                   <div>
-                    <p className="text-sm text-muted-foreground">Total Budget</p>
-                    <p className="text-lg font-semibold">${budget.amount.toFixed(2)}</p>
+                    <p className="text-sm text-muted-foreground">
+                      Total Budget
+                    </p>
+                    <p className="text-lg font-semibold">
+                      ${budget.amount.toFixed(2)}
+                    </p>
                   </div>
                   <div>
                     <p className="text-sm text-muted-foreground">Remaining</p>
-                    <p className="text-lg font-semibold">${budget.remainingBudget.toFixed(2)}</p>
+                    <p className="text-lg font-semibold">
+                      ${budget.remainingBudget.toFixed(2)}
+                    </p>
                   </div>
                 </div>
-                <Progress 
-                  value={(budget.remainingBudget / budget.amount) * 100} 
+                <Progress
+                  value={(budget.remainingBudget / budget.amount) * 100}
                   className="mb-4"
                 />
                 <ResponsiveContainer width="100%" height={100}>
                   <PieChart>
                     <Pie
                       data={[
-                        { name: 'Spent', value: budget.totalExpenses },
-                        { name: 'Income', value: budget.totalIncome },
-                        { name: 'Remaining', value: budget.remainingBudget },
+                        { name: "Spent", value: budget.totalExpenses },
+                        { name: "Income", value: budget.totalIncome },
+                        { name: "Remaining", value: budget.remainingBudget },
                       ]}
                       cx="50%"
                       cy="50%"
@@ -109,7 +115,8 @@ export function BudgetList() {
                   </PieChart>
                 </ResponsiveContainer>
                 <p className="text-sm text-muted-foreground mt-2">
-                  {new Date(budget.startDate).toLocaleDateString()} - {new Date(budget.endDate).toLocaleDateString()}
+                  {new Date(budget.startDate).toLocaleDateString()} -{" "}
+                  {new Date(budget.endDate).toLocaleDateString()}
                 </p>
               </CardContent>
             </Card>
@@ -117,6 +124,5 @@ export function BudgetList() {
         ))}
       </div>
     </div>
-  )
+  );
 }
-

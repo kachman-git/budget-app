@@ -1,6 +1,6 @@
-import { ExpenseList } from './expense-list'
-import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { ExpenseList } from "./expense-list";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 export default function ExpensesPage() {
   return (
@@ -11,6 +11,5 @@ export default function ExpensesPage() {
         <Button className="mt-4">Add New Expense</Button>
       </Link>
     </div>
-  )
+  );
 }
-
