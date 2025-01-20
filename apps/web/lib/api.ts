@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { SignUpInput, SignInInput } from "./schemas";
 
-const API_URL = "https://thorough-flexibility-production.up.railway.app";
+const API_URL = process.env.NEXT_API_URL;
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const token = localStorage.getItem("token");
