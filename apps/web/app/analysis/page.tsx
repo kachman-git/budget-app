@@ -2,7 +2,16 @@
 
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectGroup,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+} from "@/components/ui/select";
 import {
   LineChart,
   Line,
@@ -14,6 +23,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { format, subMonths, eachDayOfInterval } from "date-fns";
+import { getTransactions } from "@/lib/api";
 
 interface Transaction {
   id: string;
@@ -25,12 +35,22 @@ interface Transaction {
 export default function AnalysisPage() {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [timeRange, setTimeRange] = useState("1M");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchTransactions = async () => {
-      const response = await fetch("http://localhost:3001/transactions");
-      const data = await response.json();
-      setTransactions(data);
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getTransactions();
+        setTransactions(data);
+      } catch (error) {
+        console.error("Failed to fetch transactions:", error);
+        setError("Failed to fetch transactions. Please try again later.");
+      } finally {
+        setLoading(false);
+      }
     };
     fetchTransactions();
   }, []);
@@ -68,32 +88,36 @@ export default function AnalysisPage() {
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Financial Analysis</h1>
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Income vs Expenses Over Time</CardTitle>
-          <Select
-            value={timeRange}
-            onValueChange={(value) => setTimeRange(value)}
-          >
-            <option value="1M">Last Month</option>
-            <option value="3M">Last 3 Months</option>
-            <option value="6M">Last 6 Months</option>
-          </Select>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={400}>
-            <LineChart data={getChartData()}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Line type="monotone" dataKey="income" stroke="#4CAF50" />
-              <Line type="monotone" dataKey="expense" stroke="#F44336" />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+      {loading && <div>Loading...</div>}
+      {error && <div className="text-red-500">{error}</div>}
+      {!loading && !error && (
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between">
+            <CardTitle>Income vs Expenses Over Time</CardTitle>
+            <Select
+              value={timeRange}
+              onValueChange={(value) => setTimeRange(value)}
+            >
+              <option value="1M">Last Month</option>
+              <option value="3M">Last 3 Months</option>
+              <option value="6M">Last 6 Months</option>
+            </Select>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={400}>
+              <LineChart data={getChartData()}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="date" />
+                <YAxis />
+                <Tooltip />
+                <Legend />
+                <Line type="monotone" dataKey="income" stroke="#4CAF50" />
+                <Line type="monotone" dataKey="expense" stroke="#F44336" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

@@ -46,6 +46,7 @@ export default function SignUpPage() {
         description: "Your account has been created successfully.",
       });
       router.push("/budgets");
+      router.refresh();
     } catch (error) {
       if (
         error instanceof Error &&

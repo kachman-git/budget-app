@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
+import { createExpense } from "@/lib/api";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function NewExpensePage() {
   const [description, setDescription] = useState("");
@@ -13,31 +15,22 @@ export default function NewExpensePage() {
   const [date, setDate] = useState("");
   const router = useRouter();
   const { toast } = useToast();
+  const { user } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3001/expenses", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          description,
-          amount: parseFloat(amount),
-          date,
-          userId: "1", // Replace with actual user ID
-        }),
+      await createExpense({
+        description,
+        amount: Number.parseFloat(amount),
+        date,
+        userId: user?.id || "",
       });
-      if (response.ok) {
-        toast({
-          title: "Success",
-          description: "Expense added successfully",
-        });
-        router.push("/expenses");
-      } else {
-        throw new Error("Failed to add expense");
-      }
+      toast({
+        title: "Success",
+        description: "Expense added successfully",
+      });
+      router.push("/expenses");
     } catch (error) {
       toast({
         title: "Error",

@@ -10,7 +10,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { format } from "date-fns";
-import { Transaction } from "@/lib/types";
+import type { Transaction } from "@/lib/types";
 import { getTransactions } from "@/lib/api";
 
 interface TransactionListProps {

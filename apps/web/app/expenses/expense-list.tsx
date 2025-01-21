@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { getExpenses } from "@/lib/api";
 
 interface Expense {
   id: string;
@@ -21,9 +22,15 @@ export function ExpenseList() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
-    fetch("http://localhost:3001/expenses")
-      .then((response) => response.json())
-      .then((data) => setExpenses(data));
+    const fetchExpenses = async () => {
+      try {
+        const data = await getExpenses();
+        setExpenses(data);
+      } catch (error) {
+        console.error("Failed to fetch expenses:", error);
+      }
+    };
+    fetchExpenses();
   }, []);
 
   return (

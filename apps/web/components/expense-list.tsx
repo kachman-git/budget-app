@@ -11,10 +11,20 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+import {
+  Select,
+  SelectGroup,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectLabel,
+  SelectItem,
+  SelectSeparator,
+} from "@/components/ui/select";
 import { format } from "date-fns";
-import { Expense } from "@/lib/types";
+import type { Expense } from "@/lib/types";
 import { getExpenses } from "@/lib/api";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ExpenseListProps {
   budgetId: string;
@@ -26,15 +36,19 @@ export function ExpenseList({ budgetId }: ExpenseListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("date");
   const [sortOrder, setSortOrder] = useState("desc");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchExpenses = async () => {
       try {
+        setLoading(true);
         const data = await getExpenses(budgetId);
         setExpenses(data);
         setFilteredExpenses(data);
       } catch (error) {
         console.error("Failed to fetch expenses:", error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchExpenses();
@@ -63,6 +77,44 @@ export function ExpenseList({ budgetId }: ExpenseListProps) {
     });
     setFilteredExpenses(sorted);
   }, [expenses, searchTerm, sortBy, sortOrder]);
+
+  if (loading) {
+    return (
+      <div>
+        <div className="flex justify-between items-center mb-4">
+          <Skeleton className="h-10 w-64" />
+          <div className="flex items-center space-x-2">
+            <Skeleton className="h-10 w-32" />
+            <Skeleton className="h-10 w-10" />
+          </div>
+        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Description</TableHead>
+              <TableHead>Amount</TableHead>
+              <TableHead>Date</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {[...Array(5)].map((_, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  <Skeleton className="h-5 w-full" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-20" />
+                </TableCell>
+                <TableCell>
+                  <Skeleton className="h-5 w-24" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
+    );
+  }
 
   return (
     <div>

@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { SignUpInput, SignInInput } from "./schemas";
 
-const API_URL = process.env.NEXT_API_URL;
+const API_URL = "https://budget-app-production-3aea.up.railway.app";
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const token = localStorage.getItem("token");
@@ -41,7 +41,7 @@ export const signUp = async (input: SignUpInput): Promise<User> => {
   });
   const data = await response.json();
   if (response.ok) {
-    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("token", data.token);
     return data.user;
   }
   if (response.status === 409) {
@@ -58,7 +58,7 @@ export const signIn = async (input: SignInInput): Promise<User> => {
   });
   const data = await response.json();
   if (response.ok) {
-    localStorage.setItem("token", data.access_token);
+    localStorage.setItem("token", data.token);
     return data.user;
   }
   throw new Error(data.message || "Failed to sign in");
@@ -69,7 +69,7 @@ export const logout = () => {
 };
 
 // User Api
-export const getCurrentUser = (): Promise<User> => fetchWithAuth("/user/me");
+export const getCurrentUser = (): Promise<User> => fetchWithAuth("/users/me");
 
 export const updateUser = (data: UpdateUserDto): Promise<User> =>
   fetchWithAuth("/user", { method: "PUT", body: JSON.stringify(data) });

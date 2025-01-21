@@ -6,17 +6,20 @@ import { Progress } from "@/components/ui/progress";
 import Link from "next/link";
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { Skeleton } from "@/components/ui/skeleton";
-import { BudgetSummary } from "@/lib/types";
+import type { BudgetSummary } from "@/lib/types";
 import { getBudgets, getBudgetSummary } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 
 export function BudgetList() {
   const [budgets, setBudgets] = useState<BudgetSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchBudgets = async () => {
       try {
+        setLoading(true);
+        setError(null);
         const budgetsData = await getBudgets();
         const budgetsWithSummary = await Promise.all(
           budgetsData.map(async (budget: BudgetSummary) => {
@@ -27,6 +30,7 @@ export function BudgetList() {
         setBudgets(budgetsWithSummary);
       } catch (error) {
         console.error("Failed to fetch budgets:", error);
+        setError("Failed to fetch budgets. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -64,6 +68,7 @@ export function BudgetList() {
           <Button>Create New Budget</Button>
         </Link>
       </div>
+      {error && <div className="text-red-500 mb-4">{error}</div>}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {budgets.map((budget) => (
           <Link href={`/budgets/${budget.id}`} key={budget.id}>

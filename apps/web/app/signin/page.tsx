@@ -45,6 +45,7 @@ export default function SignInPage() {
         description: "You have successfully signed in.",
       });
       router.push("/budgets");
+      router.refresh();
     } catch (error) {
       toast({
         title: "Error",
