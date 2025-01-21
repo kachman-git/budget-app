@@ -1,4 +1,4 @@
-import "./global.css";
+import "./globals.css";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster";
 import { Header } from "@/components/header";
@@ -32,5 +32,3 @@ export default function RootLayout({
     </html>
   );
 }
-
-import "./globals.css";
