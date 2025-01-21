@@ -41,7 +41,7 @@ export const signUp = async (input: SignUpInput): Promise<User> => {
   });
   const data = await response.json();
   if (response.ok) {
-    localStorage.setItem("token", data.token);
+    localStorage.setItem("token", data.access_token);
     return data.user;
   }
   if (response.status === 409) {
@@ -58,7 +58,7 @@ export const signIn = async (input: SignInInput): Promise<User> => {
   });
   const data = await response.json();
   if (response.ok) {
-    localStorage.setItem("token", data.token);
+    localStorage.setItem("token", data.access_token);
     return data.user;
   }
   throw new Error(data.message || "Failed to sign in");
