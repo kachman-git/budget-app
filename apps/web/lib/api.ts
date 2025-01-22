@@ -14,7 +14,7 @@ import {
 } from "./types";
 import { SignUpInput, SignInInput } from "./schemas";
 
-const API_URL = process.env.NEXT_API_URL;
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 async function fetchWithAuth(url: string, options: RequestInit = {}) {
   const token = localStorage.getItem("token");
